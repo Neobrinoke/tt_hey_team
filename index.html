@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Test Technique</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container">
+            <table class="table table-bordered m-auto" style="width: 300px;">
+                <tbody id="table_body" class="text-center"></tbody>
+            </table>
+        </div>
+    </body>
+    <script>
+        const values = [
+            [180, 161, 102, 31, 31, 46, 175, 199, 106, 89, 137, 200, 199, 126, 159, 114, 184, 198, 10, 183, 30, 150, 47, 187, 35, 126, 131, 159, 173, 178, 174, 69, 87, 157, 75, 190, 181, 122, 65, 19, 63, 67, 56, 115, 65, 162, 159, 144, 77, 36],
+            [195, 31, 102, 148, 119, 28, 190, 197, 145, 190, 84, 91, 62, 101, 72, 178, 81, 92, 119, 103, 183, 57, 122, 47, 170, 12, 19, 193, 196, 199, 47, 43, 85, 152, 158, 151, 42, 26, 112, 44, 163, 186, 50, 121, 152, 49, 169, 136, 198, 98],
+            [26, 98, 102, 120, 105, 153, 47, 167, 188, 41, 121, 109, 16, 199, 83, 196, 188, 101, 122, 121, 193, 59, 77, 27, 43, 55, 70, 186, 24, 118, 185, 63, 122, 68, 119, 0, 16, 44, 181, 135, 102, 43, 134, 91, 180, 152, 94, 169, 110, 96],
+        ];
+
+        const formattedValues = [];
+        const redValues = {};
+        const greenValues = {};
+
+        for (let column = 0; column < values.length; column++) {
+            for (let row = 0; row < values[column].length; row++) {
+                const value = values[column][row];
+
+                if (!formattedValues[row]) {
+                    formattedValues[row] = [];
+                }
+
+                formattedValues[row][column] = value;
+
+                if (value > 100) {
+                    if (!greenValues[value]) {
+                        greenValues[value] = [{column, row}];
+                    } else if (greenValues[value].length < 2 && greenValues[value].findIndex((el) => (el.column === column)) === -1) {
+                        greenValues[value].push({column, row});
+                    }
+                }
+
+                if (value < 100) {
+                    redValues[value] = {column, row};
+                }
+            }
+        }
+
+        for (let row = 0; row < formattedValues.length; row++) {
+            const tr = document.createElement('tr');
+
+            for (let column = 0; column < formattedValues[row].length; column++) {
+                const value = formattedValues[row][column];
+
+                const td = document.createElement('td');
+                td.innerText = value.toString();
+
+                if (greenValues[value] && greenValues[value].findIndex((el) => (el.row === row && el.column === column)) !== -1) {
+                    td.style.color = 'green';
+                } else if (redValues[value] && redValues[value].row === row && redValues[value].column === column) {
+                    td.style.color = 'red';
+                }
+
+                tr.append(td);
+            }
+
+            document.getElementById('table_body')
+                .append(tr);
+        }
+    </script>
+</html>
